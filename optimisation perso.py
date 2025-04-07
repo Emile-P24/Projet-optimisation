@@ -44,8 +44,8 @@ def contrainte2(qr):# On veut r et q >0
     
 
 print(optimize.minimize(f,np.zeros(8),method='SLSQP', constraints = [{'type':'ineq', 'fun':contrainte1},{'type':'ineq', 'fun':contrainte2}]))
-print("Profit théorique maximal = "+ str(profit(c,v,d,A,alpha)))
-
+print("(q=d et r=Aq) : Profit théorique maximal = "+ str(profit(c,v,d,A,alpha)))
+print("Le résultat est proche du max théorique avec alpha=0.1 (Profit = 326). Pour alpha plus grand que 1, le profit max tend vers 0, car l'approximation de la fonction min n'est pas bonne  ")
 
 # Question 7
 d1 = np.array([400,67,33])
@@ -66,16 +66,6 @@ print(optimize.minimize(f2,np.zeros(8),method='SLSQP', constraints = [{'type':'i
 
 
 # Partie III
-def h_min(q,d): # on remplace h par la fonction min
-    h = np.zeros(len(q))
-    for i in range(len(q)):
-        h[i] = min(q[i],d[i])
-    return h
-
-def f3(qr): # Cette fonction ne permet pas de résoudre le problème d'optimisation, car f n'est pas différentiable, on cherche dans la suite à appliquer des nouvelles contraintes pour résoudre ce problème
-    q = qr[:3]
-    r = qr[-5:]
-    return numpy.dot(c,r) - np.dot(v,np.transpose(h_min(q,d)))
 
 # Question 9
 def f3(qu):
@@ -117,3 +107,35 @@ print(optimize.minimize(f3,np.zeros(12),method='SLSQP', constraints = [{'type':'
                                                                        {'type':'ineq', 'fun':contrainte6},
                                                                        {'type':'ineq', 'fun':contrainte7},
                                                                        {'type':'ineq', 'fun':contrainte8}]))
+
+# Question 10 
+# On procède avec une méthode de minimisation proximale
+
+def h_min(q,d): # on remplace h par la fonction min
+    h = np.zeros(len(q))
+    for i in range(len(q)):
+        h[i] = min(q[i],d[i])
+    return h
+
+def f4(q): # f4 n'est pas différentiable d'où l'utilisation de la méthode de minimisation proximale
+    cAq = numpy.dot(c,np.dot(A,q))
+    return (p1*(cAq - np.dot(v,h_min(q,d1))) 
+            +p2*(cAq - np.dot(v,h_min(q,d2)))
+            +p3*(cAq - np.dot(v,h_min(q,d3))))
+
+def prox(x,l,f):
+    def p(s):
+        return f(s) + np.dot(s-x,s-x)/(2*l)
+    return optimize.minimize(p,np.zeros(3)).x # On calcule prox(x) en utilisant la définition avec argmin 
+
+def minimisation_prox(epsilon,l):
+    x = [np.zeros(3),prox(np.zeros(3),l,f4)]
+    i = 1
+    while (abs(x[i] - x[i-1])).all() >= epsilon:
+        x += [prox(x[i],l,f4)]
+        i += 1
+    return x[-1]
+res = minimisation_prox(500,0.00000001) # choix arbitraire de l, choisi petit devant le nombre d'itérations
+print(res)
+print(f4(res))
+    
