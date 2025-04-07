@@ -58,8 +58,6 @@ p3 = 0.2
 def f2(qr): # On minimise l'espérance du profit
     q = qr[:3]
     r = qr[-5:]
-    q = qr[:3]
-    r = qr[-5:]
     return ( p1*(numpy.dot(c,r) - np.dot(v,np.transpose(h(q,d1,alpha)))) 
             +p2*(numpy.dot(c,r) - np.dot(v,np.transpose(h(q,d2,alpha))))
             +p3*(numpy.dot(c,r) - np.dot(v,np.transpose(h(q,d3,alpha)))))
@@ -74,9 +72,48 @@ def h_min(q,d): # on remplace h par la fonction min
         h[i] = min(q[i],d[i])
     return h
 
-def f3(qr):
+def f3(qr): # Cette fonction ne permet pas de résoudre le problème d'optimisation, car f n'est pas différentiable, on cherche dans la suite à appliquer des nouvelles contraintes pour résoudre ce problème
     q = qr[:3]
     r = qr[-5:]
     return numpy.dot(c,r) - np.dot(v,np.transpose(h_min(q,d)))
 
 # Question 9
+def f3(qu):
+    q = qu[:3]
+    u = [qu[3:6],qu[6:9],qu[9:]]
+    cAq = numpy.dot(c,np.dot(A,q))
+    return (p1*(cAq - np.dot(v,u[0])) 
+            +p2*(cAq - np.dot(v,u[1]))
+            +p3*(cAq - np.dot(v,u[2])))
+
+def contrainte3(qu):
+    q = qu[:3]
+    u = [qu[3:6],qu[6:9],qu[9:12]]
+    return q-u[0]
+def contrainte4(qu):
+    q = qu[:3]
+    u = [qu[3:6],qu[6:9],qu[9:12]]
+    return q-u[1]
+def contrainte5(qu):
+    q = qu[:3]
+    u = [qu[3:6],qu[6:9],qu[9:12]]
+    return q-u[2]
+def contrainte6(qu):
+    q = qu[:3]
+    u = [qu[3:6],qu[6:9],qu[9:12]]
+    return d1-u[0]
+def contrainte7(qu):
+    q = qu[:3]
+    u = [qu[3:6],qu[6:9],qu[9:12]]
+    return d2-u[1]
+def contrainte8(qu):
+    q = qu[:3]
+    u = [qu[3:6],qu[6:9],qu[9:12]]
+    return d3-u[2]
+    
+print(optimize.minimize(f3,np.zeros(12),method='SLSQP', constraints = [{'type':'ineq', 'fun':contrainte3},
+                                                                       {'type':'ineq', 'fun':contrainte4},
+                                                                       {'type':'ineq', 'fun':contrainte5},
+                                                                       {'type':'ineq', 'fun':contrainte6},
+                                                                       {'type':'ineq', 'fun':contrainte7},
+                                                                       {'type':'ineq', 'fun':contrainte8}]))
