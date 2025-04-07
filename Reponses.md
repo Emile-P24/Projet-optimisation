@@ -38,3 +38,18 @@ Ainsi :
 * $f(z) = f(q,d) = c^T r - v^T h(q,d)$ est la fonction que nous souhaitons minimiser
 * Il y a deux variables de décision : $q$ et $d$.
 * f est minimisée sous la contrainte $r >= Aq$
+
+## Partie 2
+
+5)
+Pour résoudre ce problème, on peut utiliser un algorithme d'optimisation sous contraintes. Si par exemple la fonction est convexe, il y a existence d'un point [A COMPLETER, J'AI PAS LE NOM SOUS LA MAIN on peut utiliser l'algorithme de [A COMPLETER J'AI PAS LE NOM SOUS LA MAIN]. 
+
+6)
+Les résultats résultats obtenus montrent que les maxima sont atteints pour r = Aq et q=d, ce qui semble cohérent : inutile d'acheter plus que ce dont on a besoin pour produire, et inutile de produire plus que ce que les gens achèteront ; réciproquement, produire moins que la demande serait sous-optimal : il reste un profit à aller chercher (le coût marginal de production et le prix de vente étant constants, s'il est profitable de vendre à 10 personnes, il est aussi profitable de vendre à 20).
+
+7)
+On cherche désormais à maximiser le profit espéré de notre problème, c'est à dire la fonction :
+$$
+PE = \sum_{k} P(d^k)\pi^k
+$$
+on va donc minimiser $f(z) = -PE(z)$ où $z=q,r$
