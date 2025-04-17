@@ -34,10 +34,12 @@ On veut maximiser $v^T h(q,d) - c^T r$, c'est-à-dire minimiser $-v^T h(q,d) + c
 
 La contrainte qui s'applique à la production est qu'on ne peut produire sans matières premières, ce qui se réécrit $r >= Aq$
 
+On veut également une quantité fabriquée positive, soit $q > 0$
+
 Ainsi :
 * $f(z) = f(q,d) = c^T r - v^T h(q,d)$ est la fonction que nous souhaitons minimiser
-* Il y a deux variables de décision : $q$ et $d$.
-* f est minimisée sous la contrainte $r >= Aq$
+* Il y a deux variables de décision : $q$ et $r$.
+* f est minimisée sous les contraintes $r >= Aq$ et $q > 0$
 
 ## Partie 2
 
