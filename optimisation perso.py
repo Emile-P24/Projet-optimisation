@@ -29,7 +29,7 @@ def h(q,d,alpha):
 def profit (c,v,d,A,alpha): # profit théorique calculé pour q=d et r = Aq
     return np.dot(v,np.transpose(h(d,d,alpha))) - numpy.dot(c,np.transpose(achat(d,A)))
 
-def f(qr): # qr est la concaténation de q et r, dans cet ordre
+def f(qr): # qr est la concaténation de q et r, dans cet ordre. Nécessaire pour scipy.optimize qui prend en entré des vecteurs de dimension (n,1)
     q = qr[:3]
     r = qr[-5:]
     return numpy.dot(c,r) - np.dot(v,np.transpose(h(q,d,alpha)))
@@ -39,12 +39,12 @@ def contrainte1(qr): # On veut r > Aq
     r = qr[-5:]
     return  r - np.dot(A,q)
 
-def contrainte2(qr):# On veut r et q >0
+def contrainte2(qr):# On veut r>0 et q>0
     return qr
     
 
-print(optimize.minimize(f,np.zeros(8),method='SLSQP', constraints = [{'type':'ineq', 'fun':contrainte1},{'type':'ineq', 'fun':contrainte2}]))
-print("(q=d et r=Aq) : Profit théorique maximal = "+ str(profit(c,v,d,A,alpha)))
+print(optimize.minimize(f,np.zeros(8),method='SLSQP', constraints = [{'type':'ineq', 'fun':contrainte1},{'type':'ineq', 'fun':contrainte2}]).fun)
+print("(q=d et r=Aq) : Profit théorique maximal pour q=d et r = Aq : "+ str(profit(c,v,d,A,alpha)))
 print("Le résultat est proche du max théorique avec alpha=0.1 (Profit = 326). Pour alpha plus grand que 1, le profit max tend vers 0, car l'approximation de la fonction min n'est pas bonne  ")
 
 # Question 7
